@@ -16,6 +16,7 @@ jobs:
       image: debian:trixie
     env:
       BUILD_TARGET: linux-x86_64-trixie
+      BUILD_CONFIG: Release
 
     steps:
       - name: Checkout repository
