@@ -34,6 +34,10 @@ jobs:
             clang-format \
             clang-tidy
 
+      - name: Fix build target
+        shell: bash
+        run: export BUILD_TARGET=linux-x86_64-trixie
+
       - name: Fetch and compile the application
         shell: bash
         run: ./Build.sh all
