@@ -28,11 +28,8 @@ jobs:
             ca-certificates \
             cmake \
             git \
-            make \
-            pkg-config \
             python3 \
-            gcc \
-            g++ \
+            python3-xmlschema \
             clang \
             clang-format \
             clang-tidy
