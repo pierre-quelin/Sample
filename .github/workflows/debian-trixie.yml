@@ -1,0 +1,61 @@
+name: Debian Trixie CI
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-test-publish:
+    name: Build, run unit tests and publish
+    runs-on: ubuntu-latest
+    container:
+      image: debian:trixie
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install build dependencies
+        shell: bash
+        run: |
+          apt-get update
+          DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+            build-essential \
+            ca-certificates \
+            cmake \
+            git \
+            make \
+            pkg-config \
+            python3 \
+            gcc \
+            g++ \
+            clang \
+            clang-format \
+            clang-tidy
+
+      - name: Fetch and compile the application
+        shell: bash
+        run: ./Build.sh all
+
+      - name: Run static checks
+        shell: bash
+        run: ./Build.sh check
+
+      - name: Generate documentation
+        shell: bash
+        run: ./Build.sh doc
+
+      - name: Run unit tests
+        shell: bash
+        run: ./Build.sh utest
+
+      - name: Publish successful artifact
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sample-trixie-dist
+          path: dist/
