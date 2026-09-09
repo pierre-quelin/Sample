@@ -1,0 +1,90 @@
+---
+# Foundation — clang-tidy (naming + light checks)
+#
+# Option version: LLVM/Clang **19** (same family as Debian stable / trixie).
+#
+# Install the tool:
+#   - Debian stable: `apt install clang-tidy`  → clang-tidy-19
+#   - Windows MinGW (MSYS2 ucrt64):
+#       pacman -S mingw-w64-ucrt-x86_64-clang-tools-extra
+#       PATH = C:/msys64/ucrt64/bin  (same as Build_Gen.bat mingw64)
+#       binary: clang-tidy.exe (e.g. 22.x — options ≥19 OK)
+#
+# Complements .clang-format: formatting does not cover identifier conventions.
+# Include ordering: clang-format (SortIncludes + IncludeCategories).
+#
+# Target aligned with the dominant codebase:
+#   - Classes / enums / enum constants: CamelCase (State::Off, ThreadPriority::Normal)
+#   - Functions / methods / params / variables: camelBack
+#   - Private / protected members: _camelBack
+#   - File-scope / static constexpr named constants: CamelCase (KindReq, SramSyncRetries)
+# Debt / case by case (do not bulk-rename without review):
+#   - some local constexpr values remain camelBack (maxDepth, prefix, switches)
+#   - files whose include order diverges (e.g. ObjKit.cpp, Delay.hpp after STL)
+
+Checks: >
+  -readability-identifier-naming,
+  -readability-magic-numbers,
+  -readability-named-parameter,
+  -modernize-use-trailing-return-type,
+  -llvm-*,
+  -google-*,
+  -misc-non-private-member-variables-in-classes
+
+CheckOptions:
+  - key: readability-identifier-naming.ConstantCase
+    value: CamelCase
+  - key: readability-identifier-naming.ConstantMemberCase
+    value: CamelCase
+  - key: readability-identifier-naming.ConstexprVariableCase
+    value: CamelCase
+  - key: readability-identifier-naming.GlobalConstantCase
+    value: CamelCase
+  - key: readability-identifier-naming.StaticConstantCase
+    value: CamelCase
+  - key: readability-identifier-naming.LocalConstantCase
+    value: camelBack
+  - key: readability-identifier-naming.EnumConstantCase
+    value: CamelCase
+  - key: readability-identifier-naming.PrivateMemberPrefix
+    value: '_'
+  - key: readability-identifier-naming.PrivateMemberCase
+    value: camelBack
+  - key: readability-identifier-naming.ProtectedMemberPrefix
+    value: '_'
+  - key: readability-identifier-naming.ProtectedMemberCase
+    value: camelBack
+  - key: readability-identifier-naming.PrivateFieldPrefix
+    value: '_'
+  - key: readability-identifier-naming.PrivateFieldCase
+    value: camelBack
+  - key: readability-identifier-naming.ProtectedFieldPrefix
+    value: '_'
+  - key: readability-identifier-naming.ProtectedFieldCase
+    value: camelBack
+  - key: readability-identifier-naming.ParameterCase
+    value: camelBack
+  - key: readability-identifier-naming.FunctionCase
+    value: camelBack
+  - key: readability-identifier-naming.MethodCase
+    value: camelBack
+  - key: readability-identifier-naming.ClassCase
+    value: CamelCase
+  - key: readability-identifier-naming.StructCase
+    value: CamelCase
+  - key: readability-identifier-naming.EnumCase
+    value: CamelCase
+  - key: readability-identifier-naming.NamespaceCase
+    value: lower_case
+  - key: readability-identifier-naming.VariableCase
+    value: camelBack
+  - key: readability-identifier-naming.LocalVariableCase
+    value: camelBack
+  - key: readability-identifier-naming.MacroDefinitionCase
+    value: UPPER_CASE
+  - key: readability-identifier-naming.TypeAliasCase
+    value: CamelCase
+  - key: readability-identifier-naming.TypedefCase
+    value: CamelCase
+  - key: readability-identifier-naming.ConceptCase
+    value: CamelCase

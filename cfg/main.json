@@ -1,0 +1,68 @@
+{
+   "GlobalObjects": {
+      "Platform": {
+         "Local": [
+            { "Item": "IOBoard" },
+            { "Item": "Serport" }
+         ],
+         "Remote": [
+            { "Item": "IOBoard.switch1" },
+            { "Item": "Serport" }
+         ]
+      }
+   },
+   "EventBus": {
+      "InstanceOf": "tools::design::ipc::EventBus",
+      "AppName": "EsploraPoC",
+      "Platform": {
+         "Local": {
+            "Transport": {
+               "InstanceOf": "tools::design::ipc::TransportByMqtt",
+               "Broker": "tcp://127.0.0.1:1883"
+            }
+         },
+         "Remote": {
+            "ExpectedPlatforms": [
+               "Local"
+            ],
+            "SynchronizeTimeout": "30s",
+            "Transport": {
+               "InstanceOf": "tools::design::ipc::TransportByMqtt",
+               "Broker": "tcp://127.0.0.1:1883"
+            }
+         }
+      }
+   },
+   "IOBoard": {
+      "Platform": {
+         "Local": {
+            "InstanceOf": "driver::board::EsploraBoard",
+            "LogLevel": "DEBUG"
+         }
+      },
+      "Objects": {
+         "switch1": {
+            "Platform": {
+               "Local": {
+                  "Bridged": "io::in::InBridge"
+               },
+               "Remote": {
+                  "InstanceOf": "io::in::InGhost"
+               }
+            }
+         }
+      }
+   },
+   "Serport": {
+      "DeviceName": "/dev/ttyUSB0",
+      "Platform": {
+         "Local": {
+            "InstanceOf": "tools::os::serport::Serport",
+            "Bridged": "tools::os::serport::SerportBridge"
+         },
+         "Remote": {
+            "InstanceOf": "tools::os::serport::SerportGhost"
+         }
+      }
+   }
+}
