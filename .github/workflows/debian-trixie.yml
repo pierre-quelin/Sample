@@ -14,6 +14,8 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: debian:trixie
+    env:
+      BUILD_TARGET: linux-x86_64-trixie
 
     steps:
       - name: Checkout repository
@@ -33,10 +35,6 @@ jobs:
             clang \
             clang-format \
             clang-tidy
-
-      - name: Fix build target
-        shell: bash
-        run: export BUILD_TARGET=linux-x86_64-trixie
 
       - name: Fetch and compile the application
         shell: bash
