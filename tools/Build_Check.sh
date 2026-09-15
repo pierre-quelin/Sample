@@ -51,3 +51,11 @@ cppcheck -j`nproc` --std=c++17 ../src \
 if [ $? -ne 0 ]; then
    exit 1;
 fi
+
+python3 cppcheck_to_sarif.py \
+   ../dist/cppcheck-result.xml \
+   ../dist/cppcheck-results.sarif \
+   --source-root "$(pwd)/.."
+if [ $? -ne 0 ]; then
+   exit 1;
+fi

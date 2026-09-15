@@ -62,10 +62,16 @@ POPD
 GOTO :EOF
 )
 
-IF EXIST "%PROG_FILES_X86%\Cppcheck\cppcheck.exe" (
-    "%PROG_FILES_X86%\Cppcheck\cppcheck.exe" --std=c++17 %~dp0..\src ^
+WHERE cppcheck >NUL 2>&1
+IF NOT ERRORLEVEL 1 (
+    cppcheck --std=c++17 %~dp0..\src ^
        -I%~dp0..\build\include ^
        --enable=all --suppress=missingIncludeSystem --inconclusive --xml --xml-version=2 2> %~dp0..\dist\cppcheck-result.xml
+    IF ERRORLEVEL 1 GOTO :EOF
+    python "%~dp0cppcheck_to_sarif.py" ^
+        "%~dp0..\dist\cppcheck-result.xml" ^
+        "%~dp0..\dist\cppcheck-results.sarif" ^
+        --source-root "%~dp0.."
     IF ERRORLEVEL 1 GOTO :EOF
     EXIT /B 0
 )

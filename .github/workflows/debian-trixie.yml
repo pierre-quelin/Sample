@@ -7,6 +7,9 @@ on:
 
 permissions:
   contents: read
+  security-events: write
+  pages: write
+  id-token: write
 
 jobs:
   build-test-publish:
@@ -54,6 +57,18 @@ jobs:
         shell: bash
         run: ./Build.sh doc
 
+      - name: Upload Cppcheck results to Code scanning
+        if: always() && hashFiles('dist/cppcheck-results.sarif') != ''
+        uses: github/codeql-action/upload-sarif@v4
+        with:
+          sarif_file: dist/cppcheck-results.sarif
+
+      - name: Upload documentation for GitHub Pages
+        if: success() && (github.event_name == 'workflow_dispatch' || github.ref == format('refs/heads/{0}', github.event.repository.default_branch))
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: doc/html
+
 #      - name: Run unit tests
 #        shell: bash
 #        run: ./Build.sh utest
@@ -64,3 +79,26 @@ jobs:
         with:
           name: sample-trixie-dist
           path: dist/
+
+      - name: Publish Cppcheck reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sample-trixie-cppcheck-reports
+          path: |
+            dist/cppcheck-result.xml
+            dist/cppcheck-results.sarif
+          if-no-files-found: ignore
+
+  deploy-docs:
+    name: Deploy documentation
+    needs: build-test-publish
+    if: github.event_name == 'workflow_dispatch' || github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
