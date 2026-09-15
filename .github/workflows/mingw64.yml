@@ -85,11 +85,6 @@ jobs:
         shell: cmd
         run: .\Build.bat check
 
-      - uses: Flast/cppcheck-sarif@v2
-        with:
-          input: dist/cppcheck-result.xml
-          output: dist/cppcheck-results.sarif
-
       - name: Generate documentation
         shell: cmd
         run: .\Build.bat doc

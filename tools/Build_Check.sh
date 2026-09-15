@@ -45,9 +45,9 @@ fi
 
 cd ../${0%/*}
 
-cppcheck -j`nproc` --std=c++17 ../src \
+cppcheck --std=c++17 ../src \
    -I../build/include \
-   --enable=all --suppress=missingIncludeSystem --inconclusive --xml --xml-version=2 2> ../dist/cppcheck-result.xml
+   --output-format=sarif --enable=all --suppress=missingIncludeSystem --inconclusive --output-file=../dist/cppcheck-results.sarif
 if [ $? -ne 0 ]; then
    exit 1;
 fi

@@ -70,7 +70,7 @@ WHERE cppcheck >NUL 2>&1
 IF NOT ERRORLEVEL 1 (
     cppcheck --std=c++17 %~dp0..\src ^
        -I%~dp0..\build\include ^
-       --enable=all --suppress=missingIncludeSystem --inconclusive --xml --xml-version=2 2> %~dp0..\dist\cppcheck-result.xml
+       --output-format=sarif --enable=all --suppress=missingIncludeSystem --inconclusive --output-file=%~dp0..\dist\cppcheck-results.sarif
     IF ERRORLEVEL 1 GOTO :EOF
     EXIT /B 0
 )
