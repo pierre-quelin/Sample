@@ -72,24 +72,6 @@ IF NOT ERRORLEVEL 1 (
        -I%~dp0..\build\include ^
        --enable=all --suppress=missingIncludeSystem --inconclusive --xml --xml-version=2 2> %~dp0..\dist\cppcheck-result.xml
     IF ERRORLEVEL 1 GOTO :EOF
-    cppcheck --std=c++17 %~dp0..\src ^
-        -I%~dp0..\build\include ^
-        --enable=all --suppress=missingIncludeSystem --inconclusive ^
-        --output-format=sarif --output-file=%~dp0..\dist\cppcheck-results.sarif
-    IF ERRORLEVEL 1 GOTO :EOF
-    IF DEFINED PYTHON_EXE (
-        "%PYTHON_EXE%" "%~dp0normalize_sarif.py" ^
-            "%~dp0..\dist\cppcheck-results.sarif" ^
-            "%~dp0..\dist\cppcheck-results.normalized.sarif"
-    ) ELSE (
-        python "%~dp0normalize_sarif.py" ^
-            "%~dp0..\dist\cppcheck-results.sarif" ^
-            "%~dp0..\dist\cppcheck-results.normalized.sarif"
-    )
-    IF ERRORLEVEL 1 GOTO :EOF
-    MOVE /Y "%~dp0..\dist\cppcheck-results.normalized.sarif" ^
-        "%~dp0..\dist\cppcheck-results.sarif" >NUL
-    IF ERRORLEVEL 1 GOTO :EOF
     EXIT /B 0
 )
 
