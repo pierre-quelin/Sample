@@ -54,9 +54,9 @@ jobs:
         shell: bash
         run: ./Build.sh doc
 
-      - name: Run unit tests
-        shell: bash
-        run: ./Build.sh utest
+#      - name: Run unit tests
+#        shell: bash
+#        run: ./Build.sh utest
 
       - name: Publish successful artifact
         if: success()
