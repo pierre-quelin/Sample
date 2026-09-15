@@ -6,16 +6,21 @@ REM Honors existing BUILD_TARGET; fails if Description.xml is invalid or no vari
 IF NOT EXIST "%~dp0..\Description.xml" EXIT /B 0
 
 SET "_DEPS_PY="
-WHERE python >NUL 2>&1
-IF NOT ERRORLEVEL 1 (
-    SET "_DEPS_PY=python"
+IF DEFINED PYTHON_EXE (
+    SET _DEPS_PY="%PYTHON_EXE%"
 ) ELSE (
-    WHERE py >NUL 2>&1
-    IF ERRORLEVEL 1 (
-        ECHO [ERROR] Python 3 required to resolve Description.xml
-        EXIT /B 1
+    WHERE python >NUL 2>&1
+    IF NOT ERRORLEVEL 1 (
+        SET "_DEPS_PY=python"
+    ) ELSE (
+        WHERE py >NUL 2>&1
+        IF ERRORLEVEL 1 (
+            ECHO [ERROR] Python 3 required to resolve Description.xml
+            EXIT /B 1
+        )
+        SET "_DEPS_PY=py -3"
     )
-    SET "_DEPS_PY=py -3"
+)
 )
 
 REM Capture resolve output then apply SET lines

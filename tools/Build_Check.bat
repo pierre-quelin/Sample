@@ -18,16 +18,20 @@ IF EXIST "%~dp0..\Description.xml" (
     CALL "%~dp0ResolveDescription.bat"
     IF ERRORLEVEL 1 EXIT /B 1
     SET "_DEPS_PY="
-    WHERE python >NUL 2>&1
-    IF NOT ERRORLEVEL 1 (
-        SET "_DEPS_PY=python"
+    IF DEFINED PYTHON_EXE (
+        SET _DEPS_PY="%PYTHON_EXE%"
     ) ELSE (
-        WHERE py >NUL 2>&1
-        IF ERRORLEVEL 1 (
-            ECHO [ERROR] Python 3 required for Description check
-            EXIT /B 1
+        WHERE python >NUL 2>&1
+        IF NOT ERRORLEVEL 1 (
+            SET "_DEPS_PY=python"
+        ) ELSE (
+            WHERE py >NUL 2>&1
+            IF ERRORLEVEL 1 (
+                ECHO [ERROR] Python 3 required for Description check
+                EXIT /B 1
+            )
+            SET "_DEPS_PY=py -3"
         )
-        SET "_DEPS_PY=py -3"
     )
     %_DEPS_PY% "%~dp0Dependencies.py" -d "%~dp0..\Description.xml" check
     IF ERRORLEVEL 1 EXIT /B 1
@@ -72,6 +76,19 @@ IF NOT ERRORLEVEL 1 (
         -I%~dp0..\build\include ^
         --enable=all --suppress=missingIncludeSystem --inconclusive ^
         --output-format=sarif --output-file=%~dp0..\dist\cppcheck-results.sarif
+    IF ERRORLEVEL 1 GOTO :EOF
+    IF DEFINED PYTHON_EXE (
+        "%PYTHON_EXE%" "%~dp0normalize_sarif.py" ^
+            "%~dp0..\dist\cppcheck-results.sarif" ^
+            "%~dp0..\dist\cppcheck-results.normalized.sarif"
+    ) ELSE (
+        python "%~dp0normalize_sarif.py" ^
+            "%~dp0..\dist\cppcheck-results.sarif" ^
+            "%~dp0..\dist\cppcheck-results.normalized.sarif"
+    )
+    IF ERRORLEVEL 1 GOTO :EOF
+    MOVE /Y "%~dp0..\dist\cppcheck-results.normalized.sarif" ^
+        "%~dp0..\dist\cppcheck-results.sarif" >NUL
     IF ERRORLEVEL 1 GOTO :EOF
     EXIT /B 0
 )

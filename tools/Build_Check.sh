@@ -59,3 +59,11 @@ cppcheck -j`nproc` --std=c++17 ../src \
 if [ $? -ne 0 ]; then
    exit 1;
 fi
+
+python3 normalize_sarif.py \
+   ../dist/cppcheck-results.sarif \
+   ../dist/cppcheck-results.normalized.sarif
+if [ $? -ne 0 ]; then
+   exit 1;
+fi
+mv ../dist/cppcheck-results.normalized.sarif ../dist/cppcheck-results.sarif
