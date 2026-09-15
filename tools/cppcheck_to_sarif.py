@@ -3,8 +3,9 @@
 
 import argparse
 import json
-import os
 import xml.etree.ElementTree as ET
+from pathlib import Path
+from urllib.parse import quote
 
 
 LEVELS = {
@@ -18,10 +19,21 @@ LEVELS = {
 
 
 def relative_uri(filename, source_root):
-    normalized = os.path.normpath(filename).replace("\\", "/")
-    if source_root:
-        normalized = os.path.relpath(normalized, source_root).replace("\\", "/")
-    return normalized
+    path = Path(filename)
+    root = Path(source_root).resolve() if source_root else Path.cwd().resolve()
+    if not path.is_absolute():
+        path = (Path.cwd() / path).resolve()
+    try:
+        relative = path.relative_to(root)
+    except ValueError:
+        return None
+    return quote(relative.as_posix(), safe="/-._~")
+
+
+def positive_integer(value):
+    if value and value.isdigit() and int(value) > 0:
+        return int(value)
+    return None
 
 
 def convert(input_path, output_path, source_root):
@@ -30,7 +42,7 @@ def convert(input_path, output_path, source_root):
     rules = {}
 
     for finding in root.findall("./errors/error"):
-        rule_id = finding.get("id", "cppcheck")
+        rule_id = finding.get("id") or "cppcheck"
         severity = finding.get("severity", "warning")
         location_node = finding.find("./location")
         rules.setdefault(
@@ -50,19 +62,27 @@ def convert(input_path, output_path, source_root):
         line = finding.get("line0") or (
             location_node.get("line") if location_node is not None else None
         )
-        column = finding.get("column0") or (
-            location_node.get("column") if location_node is not None else None
-        )
+        column = None
         if filename:
             region = {}
-            if line and line.isdigit():
-                region["startLine"] = int(line)
-            if column and column.isdigit():
-                region["startColumn"] = int(column)
-            physical = {"artifactLocation": {"uri": relative_uri(filename, source_root)}}
-            if region:
+            uri = relative_uri(filename, source_root)
+            if uri is None:
+                filename = None
+            else:
+                start_line = positive_integer(line)
+                start_column = positive_integer(column)
+                if start_line is not None:
+                    region["startLine"] = start_line
+                if start_column is not None:
+                    region["startColumn"] = start_column
+                physical = {"artifactLocation": {"uri": uri}}
+            if filename is None:
+                location = {}
+            elif region:
                 physical["region"] = region
-            location = {"physicalLocation": physical}
+                location = {"physicalLocation": physical}
+            else:
+                location = {"physicalLocation": physical}
 
         result = {
             "ruleId": rule_id,
