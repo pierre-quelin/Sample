@@ -6,7 +6,7 @@
       <name>Sample</name>
       <id>000001</id>
       <env>build-msvc16</env>
-      <version>1.0.0</version>
+      <env_version>1.0.0</env_version>
       <build_path>C:/workspace/Sample</build_path>
       <build_target>msvc16-x86_64</build_target>
     </variant>
@@ -14,7 +14,7 @@
       <name>Sample</name>
       <id>000002</id>
       <env>build-mingw</env>
-      <version>1.0.0</version>
+      <env_version>1.0.0</env_version>
       <build_path>C:/workspace/Sample</build_path>
       <build_target>mingw64</build_target>
     </variant>
@@ -22,7 +22,7 @@
       <name>Sample</name>
       <id>000003</id>
       <env>build-linux</env>
-      <version>1.0.0</version>
+      <env_version>1.0.0</env_version>
       <build_path>/home/user/workspace/Sample</build_path>
       <build_target>linux-x86_64-trixie</build_target>
     </variant>
@@ -33,7 +33,7 @@
       <name>Foundation</name>
       <version>0.0.1</version>
       <path>lib/Foundation</path>
-      <source type="git" artifact="tree">https://github.com/pierre-quelin/Foundation.git</source>
+      <source type="fs" artifact="tree">/home/pierre/workspace/Foundation</source>
       <build/>
       <build_target>mingw64</build_target>
       <build_target>msvc16-x86_64</build_target>

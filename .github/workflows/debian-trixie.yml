@@ -27,15 +27,19 @@ jobs:
         run: |
           apt-get update
           DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+            pkg-config \
+            libusb-1.0-0-dev \
             build-essential \
             ca-certificates \
             cmake \
+            doxygen \
             git \
             python3 \
             python3-xmlschema \
             clang \
             clang-format \
-            clang-tidy
+            clang-tidy \
+            cppcheck
 
       - name: Fetch and compile the application
         shell: bash

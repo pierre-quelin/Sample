@@ -1,7 +1,6 @@
 @ECHO OFF
 SETLOCAL enabledelayedexpansion
 REM Apply or check clang-format using MSYS2 ucrt64 (Clang 19+ options in /.clang-format).
-REM Same rules as Foundation; Sample keeps a copy of .clang-format at repo root.
 REM
 REM Usage (from repo root or tools/) :
 REM   tools\ClangFormat.bat              dry-run on src\ (+ tests\ if present)

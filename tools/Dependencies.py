@@ -162,7 +162,7 @@ def emit_resolve(variant: ET.Element, shell: str) -> None:
     name = text_of(variant, "name")
     vid = text_of(variant, "id")
     env = text_of(variant, "env")
-    version = text_of(variant, "version")
+    env_version = text_of(variant, "env_version")
     build_path = text_of(variant, "build_path")
     targets = variant_targets(variant)
     build_target = targets[0] if targets else ""
@@ -172,7 +172,7 @@ def emit_resolve(variant: ET.Element, shell: str) -> None:
         ("VARIANT_NAME", name),
         ("VARIANT_ID", vid),
         ("VARIANT_ENV", env),
-        ("ENV_VERSION", version),
+        ("ENV_VERSION", env_version),
         ("VARIANT_BUILD_PATH", build_path),
     ]
     if shell == "bat":

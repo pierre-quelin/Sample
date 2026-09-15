@@ -68,7 +68,7 @@
                     <xs:element name="name" type="nonEmptyString"/>
                     <xs:element name="id" type="idType"/>
                     <xs:element name="env" type="xs:string" minOccurs="0"/>
-                    <xs:element name="version" type="xs:string" minOccurs="0"/>
+                    <xs:element name="env_version" type="xs:string" minOccurs="0"/>
                     <xs:element name="build_path" type="xs:string" minOccurs="0"/>
                     <xs:element name="build_target" type="buildTargetType" minOccurs="1" maxOccurs="unbounded"/>
                   </xs:sequence>
