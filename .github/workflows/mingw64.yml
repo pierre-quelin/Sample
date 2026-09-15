@@ -57,6 +57,7 @@ jobs:
             toolchain:p
             clang:p
             clang-tools-extra:p
+            libusb:p
 
       - name: Export MSYS2 environment
         shell: powershell
