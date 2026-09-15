@@ -33,7 +33,7 @@
       <name>Foundation</name>
       <version>0.0.1</version>
       <path>lib/Foundation</path>
-      <source type="fs" artifact="tree">/home/pierre/workspace/Foundation</source>
+      <source type="git" artifact="tree">https://github.com/pierre-quelin/Foundation.git</source>
       <build/>
       <build_target>mingw64</build_target>
       <build_target>msvc16-x86_64</build_target>
